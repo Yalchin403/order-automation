@@ -59,7 +59,7 @@ class Order(models.Model):
 			<li>Əlavə qeydlər: {self.notes}</li>
 			<ul>
 			"""
-		reciever_email = os.getenv('reciever_email') 
+		reciever_email = os.getenv('RECIEVER_EMAIL') 
 
 		msg = EmailMessage(
 			"Yeni Sifaris",
