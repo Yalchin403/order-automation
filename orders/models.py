@@ -1,9 +1,11 @@
 from turtle import title
 from django.db import models
-from django.core.mail import EmailMessage
-from order_automation.settings import EMAIL_HOST_USER
 from dotenv import load_dotenv
 import os
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from .utils import send_status_update_to_user
+
 
 load_dotenv()
 
@@ -42,32 +44,18 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.name} {self.surname} - {self.phone_number}'
 
-    def save(self, *args, **kwargs):
-        # send email
 
-        try:
-            email_body = f"""
-				<h1>{self.name} {self.surname} terefinden yeni sifaris var</h1>
+@receiver(pre_save, sender=Order)
+def do_something_if_changed(sender, instance, **kwargs):
+    try:
+        previous_order_obj = Order.objects.get(id=instance.id)
 
-				<ul>
-				<li>Email: {self.email}</li>
-				<li>Telefon: {self.phone_number}</li>
-				<li>Məhsulun Linki: {self.order_url}</li>
-				<li>Əlavə qeydlər: {self.notes}</li>
-				<ul>
-				"""
-            reciever_email = os.getenv('RECIEVER_EMAIL')
+        if previous_order_obj.order_status != instance.order_status: # field will be updated
+        # send email to the user about status change
 
-            msg = EmailMessage(
-                "Yeni Sifaris",
-                email_body,
-                EMAIL_HOST_USER,
-                [reciever_email]
-            )
-            msg.content_subtype = "html"
-            msg.send()
+            send_status_update_to_user(instance.name, instance.email, instance.order_status, instance.order_url, instance.notes)
 
-        except:
-            print("Couldn't send the email")
+    except:
+        pass # that means this is new order not the status change
 
-        return super().save(*args, **kwargs)
+    

@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from .models import Order
+from .utils import send_email_to_admin
 
 
 class OrderView(View):
@@ -34,6 +35,13 @@ class OrderView(View):
 
                 order_obj.save()
 
+                send_email_to_admin(order_obj.name,
+                                    order_obj.surname,
+                                    order_obj.email,
+                                    order_obj.phone_number,
+                                    order_obj.order_url,
+                                    order_obj.notes
+                    )
             else:
                 return HttpResponse("Datalar boş olmamalıdır!", status=500)
 
@@ -41,7 +49,3 @@ class OrderView(View):
             return HttpResponse("Görünüşə görə front id-ləri gözlənildiyi kimi deyil!", status=500)
         # Amin, ele et ki, sifarisi doldurub donder vuranda, heqiqten email de gelsin, admin panelde de gorunsun sifaris
         return HttpResponse("Response back!", status=200)
-
-
-# TODO:
-#  gelen defe status deyismekle email gondermeyi yazaq
