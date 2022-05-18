@@ -1,11 +1,47 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from .models import Order
 
 
 class OrderView(View):
-	def get(self, request):
-		if request.method == "GET":
-			return render(request, 'orders/index.html')
+    def get(self, request):
+        if request.method == "GET":
+            return render(request, 'orders/index.html')
 
-	def post(self, request):
-		pass
+    def post(self, request):
+        # Formdan gelen datalari gotur
+        try:
+            name = request.POST.get('name')
+            surname = request.POST.get('surname')
+            email = request.POST.get('email')
+            phone_number = request.POST.get('phone')
+            order_url = request.POST.get('link')
+            notes = request.POST.get('message')
+
+            if name is not None and surname is not None and email is not None and phone_number is not None and \
+                    order_url is not None and notes is not None:
+
+                # print(name, surname, email, phone_number)
+
+                order_obj = Order.objects.create(
+                    name=name,
+                    surname=surname,
+                    email=email,
+                    phone_number=phone_number,
+                    order_url=order_url,
+                    notes=notes)
+
+                order_obj.save()
+
+            else:
+                return HttpResponse("Datalar boş olmamalıdır!", status=500)
+
+        except:
+            return HttpResponse("Görünüşə görə front id-ləri gözlənildiyi kimi deyil!", status=500)
+        # Amin, ele et ki, sifarisi doldurub donder vuranda, heqiqten email de gelsin, admin panelde de gorunsun sifaris
+        return HttpResponse("Response back!", status=200)
+
+
+# TODO:
+#  gelen defe status deyismekle email gondermeyi yazaq

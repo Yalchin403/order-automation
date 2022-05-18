@@ -2,7 +2,7 @@
 {% load static %}
 <html lang="en">
   <head>
-  	<title>Sifariş Formu</title>
+  	<title>Onlayn sifariş yerləşdir</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -18,7 +18,7 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-6 text-center mb-5">
-					<h2 class="heading-section">Bir linklə sifariş ver!</h2>
+					<h2 class="heading-section">Onlayn sifariş yerləşdir</h2>
 				</div>
 			</div>
 			<div class="row justify-content-center">
@@ -30,9 +30,10 @@
 									<h3 class="mb-4">Sifariş Formu</h3>
 									<div id="form-message-warning" class="mb-4"></div>
 				      		<div id="form-message-success" class="mb-4">
-				            Your message was sent, thank you!
+				            Sizin sifarişiniz qəbul olundu, təşəkkürlər!
 				      		</div>
 									<form method="POST" id="contactForm" name="contactForm">
+										{% csrf_token %}
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
@@ -42,7 +43,7 @@
 
 											<div class="col-md-6">
 												<div class="form-group">
-													<input type="text" class="form-control" name="surname" id="name" placeholder="Soyad">
+													<input type="text" class="form-control" name="surname" id="surname" placeholder="Soyad">
 												</div>
 											</div>
 
@@ -54,12 +55,12 @@
 
 											<div class="col-md-6">
 												<div class="form-group">
-													<input type="text" class="form-control" name="phone" id="subject" placeholder="Telefon">
+													<input type="text" class="form-control" name="phone" id="phone" placeholder="Telefon">
 												</div>
 											</div>
 											<div class="col-md-12">
 												<div class="form-group">
-													<input type="text" class="form-control" name="link" id="subject" placeholder="Məhsulun Linki">
+													<input type="text" class="form-control" name="link" id="link" placeholder="Məhsulun Linki">
 												</div>
 											</div>
 
