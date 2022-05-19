@@ -18,11 +18,14 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 
 # handler404 = 'core.views.error_404'
 urlpatterns = [
-    path('', include('orders.urls')),
+    path('order/', include('orders.urls')),
+    path('about/', TemplateView.as_view(template_name="about.html")),
+    path('', include('home.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns.extend(i18n_patterns(

@@ -34,7 +34,7 @@
 					$.ajax({
 
 				      type: "POST",
-				      url: "/",
+				      url: "/order/",
 				      data: $(form).serialize(),
 
 				      beforeSend: function() {

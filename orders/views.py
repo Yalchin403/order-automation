@@ -8,7 +8,7 @@ from .utils import send_email_to_admin
 class OrderView(View):
     def get(self, request):
         if request.method == "GET":
-            return render(request, 'orders/index.html')
+            return render(request, 'orders/index.html', {"title": "Onlayn sifariş yerləşdir"})
 
     def post(self, request):
         # Formdan gelen datalari gotur
