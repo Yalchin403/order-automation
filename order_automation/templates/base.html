@@ -43,7 +43,7 @@
 <!-- navbar -->
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="{% url 'home:home-view' %}">Amin Store</a>
+      <a class="navbar-brand" href="{% url 'home:main' %}">Amin Store</a>
       <button onclick="myFunction()" id="p2" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -54,7 +54,7 @@
           <a class="nav-link" href="#">Giriş</a>
           <a class="nav-link" href="#">Qeydiyyat</a>
           <a class="nav-link" href="/about">Haqqımızda</a>
-          <a class="nav-link" href="#">Əlaqə</a>
+          <a class="nav-link" href="{% url 'home:contact' %}">Əlaqə</a>
         </div>
       </div>
     </nav>
