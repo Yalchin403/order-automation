@@ -18,16 +18,17 @@
 						<div class="row no-gutters">
 							<div class="col-md-6 d-flex align-items-stretch">
 								<div class="contact-wrap w-100 p-md-5 p-4 py-5">
-									<h3 class="mb-4">Write us</h3>
+									<h3 class="mb-4">Bizə yaz!</h3>
 									<div id="form-message-warning" class="mb-4"></div> 
 				      		<div id="form-message-success" class="mb-4">
-				            Your message was sent, thank you!
+				            Mesajınız uğurla göndərildi!
 				      		</div>
 									<form method="POST" id="contactForm" name="contactForm" class="contactForm">
+										{% csrf_token %}
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<input type="text" class="form-control" name="name" id="name" placeholder="Name">
+													<input type="text" class="form-control" name="name" id="name" placeholder="Ad">
 												</div>
 											</div>
 											<div class="col-md-12"> 
@@ -37,17 +38,17 @@
 											</div>
 											<div class="col-md-12">
 												<div class="form-group">
-													<input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
+													<input type="text" class="form-control" name="subject" id="subject" placeholder="Mövzu">
 												</div>
 											</div>
 											<div class="col-md-12">
 												<div class="form-group">
-													<textarea name="message" class="form-control" id="message" cols="30" rows="6" placeholder="Message"></textarea>
+													<textarea name="message" class="form-control" id="message" cols="30" rows="6" placeholder="Mesaj"></textarea>
 												</div>
 											</div>
 											<div class="col-md-12">
 												<div class="form-group">
-													<input type="submit" value="Send Message" class="btn btn-primary">
+													<input type="submit" value="Göndər!" class="btn btn-primary" id="submit">
 													<div class="submitting"></div>
 												</div>
 											</div>
@@ -57,14 +58,14 @@
 							</div>
 							<div class="col-md-6 d-flex align-items-stretch">
 								<div class="info-wrap w-100 p-md-5 p-4 py-5 img">
-									<h3>Contact information</h3>
-									<p class="mb-4">We're open for any suggestion or just to have a chat</p>
+									<h3>Əlaqə Məlumatları</h3>
+									<p class="mb-4">İstənilən təklif üçün açığıq!</p>
 				        	<div class="dbox w-100 d-flex align-items-start">
 				        		<div class="icon d-flex align-items-center justify-content-center">
 				        			<span class="fa fa-map-marker"></span>
 				        		</div>
 				        		<div class="text pl-3">
-					            <p><span>Address:</span> 198 West 21th Street, Suite 721 New York NY 10016</p>
+					            <p><span>Addres:</span> Bibiheybət qəsəbəsi, Məktəb küçəsi 2</p>
 					          </div>
 				          </div>
 				        	<div class="dbox w-100 d-flex align-items-center">
@@ -72,7 +73,7 @@
 				        			<span class="fa fa-phone"></span>
 				        		</div>
 				        		<div class="text pl-3">
-					            <p><span>Phone:</span> <a href="tel://1234567920">+ 1235 2355 98</a></p>
+					            <p><span>Telefon:</span> <a href="tel://994705019780">+ 994 70 501 97 80</a></p>
 					          </div>
 				          </div>
 				        	<div class="dbox w-100 d-flex align-items-center">
@@ -80,7 +81,7 @@
 				        			<span class="fa fa-paper-plane"></span>
 				        		</div>
 				        		<div class="text pl-3">
-					            <p><span>Email:</span> <a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
+					            <p><span>Email:</span> <a href="mailto:yalchinmammadli@yalchin.info">yalchinmammadli@yalchin.info</a></p>
 					          </div>
 				          </div>
 				        	<div class="dbox w-100 d-flex align-items-center">
@@ -88,7 +89,7 @@
 				        			<span class="fa fa-globe"></span>
 				        		</div>
 				        		<div class="text pl-3">
-					            <p><span>Website</span> <a href="#">yoursite.com</a></p>
+					            <p><span>Website</span> <a href="yalchin.info">yalchin.info</a></p>
 					          </div>
 				          </div>
 			          </div>
@@ -100,10 +101,10 @@
 		</div>
 	</section>
 
-	<script src="js/jquery.min.js"></script>
-  <script src="js/popper.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery.validate.min.js"></script>
-  <script src="{% static 'js/contact.js' %}"></script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/popper.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.validate.min.js' %}"></script>
+<script src="{% static 'js/contact.js' %}"></script>
 
   {% endblock %}

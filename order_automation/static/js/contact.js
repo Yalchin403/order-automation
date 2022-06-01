@@ -33,14 +33,16 @@
 
 					$.ajax({   	
 				      type: "POST",
-				      url: "php/sendEmail.php",
+				      url: "/contact/",
 				      data: $(form).serialize(),
 
-				      beforeSend: function() { 
+				      beforeSend: function() {
+						var button = document.getElementById("submit");
+						button.style.display = "none";
 				      	$submit.css('display', 'block').text(waitText);
 				      },
-				      success: function(msg) {
-		               if (msg == 'OK') {
+				      success: function(msg,  textStatus, xhr) {
+		               if (xhr.status == 200) {
 		               	$('#form-message-warning').hide();
 				            setTimeout(function(){
 		               		$('#contactForm').fadeIn();
@@ -60,17 +62,21 @@
 		               	setTimeout(function(){
 		               		$( '#contactForm' ).each(function(){
 											    this.reset();
+												var button = document.getElementById("submit");
+												button.style.display = "block";
 											});
 		               	}, 1400);
 			               
 			            } else {
 			               $('#form-message-warning').html(msg);
 				            $('#form-message-warning').fadeIn();
+							var button = document.getElementById("submit");
+							button.style.display = "block";
 				            $submit.css('display', 'none');
 			            }
 				      },
 				      error: function() {
-				      	$('#form-message-warning').html("Something went wrong. Please try again.");
+				      	$('#form-message-warning').html(msg.responseText);
 				         $('#form-message-warning').fadeIn();
 				         $submit.css('display', 'none');
 				      }
