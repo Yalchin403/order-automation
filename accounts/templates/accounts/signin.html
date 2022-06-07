@@ -16,11 +16,21 @@
         <!-- success message -->
             {% for message in messages%}
 
-                <div class="alert alert-success" role="alert">
+                {% if message.tags == success %}
+                    <div class="alert alert-success" role="alert">
+                            <p>
+                                {{ message }}
+                            </p>
+                    </div>
+                
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
                         <p>
                             {{ message }}
                         </p>
-                </div>
+                    </div>
+                
+                {% endif %}
                     
             {% endfor %}
 
@@ -32,14 +42,15 @@
 
             <div class="signin-form">
                 <h2 class="form-title">Giriş</h2>
-                <form method="POST" class="register-form" id="login-form">
+                <form method="POST" class="register-form" id="login-form" action="/auth/signin/">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                        <input type="text" name="your_name" id="your_name" placeholder="Email"/>
+                        <input type="text" required name="email" id="your_name" placeholder="Email"/>
                     </div>
                     <div class="form-group">
                         <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                        <input type="password" name="your_pass" id="your_pass" placeholder="Parol"/>
+                        <input type="password" required name="password" id="your_pass" placeholder="Parol"/>
                     </div>
                     <div class="form-group">
                         <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />

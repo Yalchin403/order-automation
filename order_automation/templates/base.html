@@ -31,10 +31,15 @@
         <div class="navbar-nav ml-auto">
           <a class="nav-link" href="/">Ana Səhifə</a>
           <a class="nav-link" href="{% url 'orders:order-view' %}">Sifariş ver</a>
-          <a class="nav-link" href="{% url 'accounts:signup-view' %}">Qeydiyyat</a>
-          <a class="nav-link" href="{% url 'accounts:signin-view' %}">Giriş</a>
+          {% if not user.is_authenticated %}
+            <a class="nav-link" href="{% url 'accounts:signup-view' %}">Qeydiyyat</a>
+            <a class="nav-link" href="{% url 'accounts:signin-view' %}">Giriş</a>
+          {% endif %}
           <a class="nav-link" href="{% url 'home:about' %}">Haqqımızda</a>
           <a class="nav-link" href="{% url 'home:contact' %}">Əlaqə</a>
+          {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'accounts:logout-view' %}">Çıxış</a>
+          {% endif %}
         </div>
       </div>
     </nav>
