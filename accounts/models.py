@@ -2,11 +2,20 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.dispatch import receiver
 from django.urls import reverse
-# from django_rest_passwordreset.signals import reset_password_token_created
-# import os
-# import pathlib
-# from django.contrib.sites.shortcuts import get_current_site
-# from django.conf import settings
+from django.conf import settings
+import pyotp
+from dotenv import load_dotenv
+import os
+from .utils import send_email
+
+load_dotenv()
+
+if settings.DEBUG:
+	current_site = os.getenv("LOCAL_DOMAIN")
+
+else:
+	current_site = os.getenv("PROD_DOMAIN")
+
 
 
 class MyAccountManager(BaseUserManager):
@@ -73,6 +82,8 @@ class Account(AbstractBaseUser):
 	is_staff = models.BooleanField(default=False)
 	is_admin = models.BooleanField(default=False)
 	is_superadmin = models.BooleanField(default=False)
+	otp = models.CharField(max_length=55)
+	activation_key = models.CharField(max_length=55)
 
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -88,19 +99,29 @@ class Account(AbstractBaseUser):
 
 	objects = MyAccountManager()
 
+	def generate_otp(self):
+		OTP_EXPIRATION_TIME_IN_SECONDS = 600
+		secret = pyotp.random_base32()        
+		totp = pyotp.TOTP(secret, interval=OTP_EXPIRATION_TIME_IN_SECONDS)
+		OTP = totp.now()
+		self.otp = OTP
+		self.activation_key = secret
 
-# @receiver(reset_password_token_created)
-# def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-	
-# 	if settings.DEBUG:
-# 		current_site = os.getenv("LOCAL_DOMAIN")
+	def generate_otp_link(self, id, otp):
+		otp = self.otp
+		rel_url = reverse("accounts:verify-account", args=(id, otp))
+		absolute_url = current_site + rel_url
 
-# 	else:
-# 		current_site = os.getenv("PROD_DOMAIN")
+		return absolute_url
 
-# 	abs_url = f"{current_site}{reverse('password_reset:reset-password-request')}?token={reset_password_token.key}"
-# 	subject = "Parolu Yenilə"
-# 	email = reset_password_token.user.email
-# 	current_path = pathlib.Path(__file__).parent.resolve()
-# 	content = get_html_content(os.path.join(current_path,'templates', 'accounts', 'forgot_password.html')) + abs_url
-# 	send_email(email, subject, content)
+	def save(self, *args, **kwargs) -> None:
+		if not self.is_active:
+			super().save()
+
+			self.generate_otp()
+			absolute_url = self.generate_otp_link(self.id, self.otp)
+			email_subject = "Hesab Təsdiqlənməsi"
+			rel_content = "Hesabınızı təsdiqləmək üçün aşağıdakı linkə klik edin: \n"
+			email_content = rel_content + absolute_url
+			send_email(email_subject, self.email, email_content)
+		

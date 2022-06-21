@@ -7,6 +7,10 @@ from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
 import os
 from dotenv import load_dotenv
+import pyotp
+from django.shortcuts import get_object_or_404
+
+from accounts.utils import send_email
 
 
 load_dotenv()
@@ -49,10 +53,11 @@ class SignInView(View):
 class SignUpView(View):
     def get(self, request):
         if not self.request.user.is_authenticated:
+            context = {
+                'title': 'Qeydiyyat',
+            }
 
-        #TODO:
-        #   send title as context
-            return render(request, "accounts/signup.html", {'title': 'Qeydiyyat'})
+            return render(request, "accounts/signup.html", context)
         
         return redirect("home:main")
 
@@ -67,7 +72,6 @@ class SignUpView(View):
         password2 = request.POST.get('password2')
         is_agree = request.POST.get("agree-term")
 
-        print(is_agree, type(is_agree))
         if username and email and password1 and password2 and is_agree == "on":
             user_qs_by_username = User.objects.filter(username=username)
             user_qs_by_email = User.objects.filter(email=email)
@@ -75,7 +79,6 @@ class SignUpView(View):
             if not user_qs_by_email and not user_qs_by_username:
 
                 if password1 == password2:
-                    print("Here")
                     user_obj = User.objects.create(username=username, email=email)
                     user_obj.set_password(password2)
                     user_obj.save()
@@ -102,6 +105,32 @@ class SignUpView(View):
         return render(request, 'accounts/signup.html', {'title': 'Qeydiyyat'})
 
 
+class VerifyAccountView(View):
+    def get(self, request, id, otp):
+        account_obj = get_object_or_404(User, id=id)
+        activation_key = account_obj.activation_key
+        totp = pyotp.TOTP(activation_key, interval=600)
+
+        _otp = account_obj.otp
+        if otp != _otp:
+            return render(request, "accounts/invalid_otp.html", status=406)
+
+        else:
+            verify = totp.verify(otp)
+
+            if verify:
+                account_obj.is_active = True
+                email_subject = "Hesabınız təsdiqləndi"
+                receiver_email = account_obj.email
+                email_content = "Saytımıza xoş gəldiniz, hesabınız uğurla təsdiqləndi!"
+                send_email(email_subject, receiver_email, email_content)
+                account_obj.save()
+                
+                return render(request, "accounts/account_verified.html", status=200)    
+            else:
+                return render(request, "accounts/otp_expired.html", status=410)
+
+
 class LogoutView(View):
     def get(self, request):
         logout(request)
@@ -109,4 +138,5 @@ class LogoutView(View):
 
 
 #TODO:
-#   otp authentication upon registration
+# otp is generated in models twice that couses confusion
+# so use signals to generate otp just once on instance create
