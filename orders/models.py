@@ -1,7 +1,5 @@
-from turtle import title
 from django.db import models
 from dotenv import load_dotenv
-import os
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from .utils import send_status_update_to_user

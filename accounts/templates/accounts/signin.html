@@ -13,17 +13,17 @@
 <section class="sign-in">
 
     <div class="container">
-        <!-- success message -->
+        <!-- display messages -->
             {% for message in messages%}
 
-                {% if message.tags == success %}
+                {% if message.tags == "success" %}
                     <div class="alert alert-success" role="alert">
                             <p>
                                 {{ message }}
                             </p>
                     </div>
                 
-                {% else %}
+                {% elif message.tags == "error" %}
                     <div class="alert alert-danger" role="alert">
                         <p>
                             {{ message }}

@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: madefire/chordtest
+    command: bash -c "celery -A order_automation worker -l INFO"
+    environment:
+      - BROKER_URL=redis://redis:6379/0
+      - RESULT_BACKEND=redis://redis:6379/0
+      - C_FORCE_ROOT=true
+    volumes:
+      - ./:/app/
+    depends_on:
+      - redis

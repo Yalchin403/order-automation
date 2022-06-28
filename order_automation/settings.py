@@ -148,3 +148,14 @@ EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
+
+
+# CELERY SETTINGS
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_TIMEZONE = "Asia/Baku"
+CELERY_BROKER_URL = "redis://localhost:6379/"
+CELERY_RESULT_BACKEND = "redis://localhost:6379" # if you are using docker for celery and redis and running the app on localhost
+CELERY_ENABLE_UTC = False
+# CELERY_BROKER_URL = "redis://redis:6379/"
+# CELERY_RESULT_BACKEND = "redis://redis:6379" # if you have dockerized everything and named redis container as redis

@@ -1,4 +1,5 @@
 from json import load
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 from django.contrib.auth import get_user_model
@@ -9,8 +10,7 @@ import os
 from dotenv import load_dotenv
 import pyotp
 from django.shortcuts import get_object_or_404
-
-from accounts.utils import send_email
+from accounts.tasks import send_email
 
 
 load_dotenv()
@@ -108,27 +108,32 @@ class SignUpView(View):
 class VerifyAccountView(View):
     def get(self, request, id, otp):
         account_obj = get_object_or_404(User, id=id)
-        activation_key = account_obj.activation_key
-        totp = pyotp.TOTP(activation_key, interval=600)
+        if not account_obj.is_active:
 
-        _otp = account_obj.otp
-        if otp != _otp:
-            return render(request, "accounts/invalid_otp.html", status=406)
+            activation_key = account_obj.activation_key
+            totp = pyotp.TOTP(activation_key, interval=600)
 
-        else:
-            verify = totp.verify(otp)
+            _otp = account_obj.otp
+            if otp != _otp:
+                return render(request, "accounts/invalid_otp.html", status=406)
 
-            if verify:
-                account_obj.is_active = True
-                email_subject = "Hesabınız təsdiqləndi"
-                receiver_email = account_obj.email
-                email_content = "Saytımıza xoş gəldiniz, hesabınız uğurla təsdiqləndi!"
-                send_email(email_subject, receiver_email, email_content)
-                account_obj.save()
-                
-                return render(request, "accounts/account_verified.html", status=200)    
             else:
-                return render(request, "accounts/otp_expired.html", status=410)
+                verify = totp.verify(otp)
+
+                if verify:
+                    account_obj.is_active = True
+                    email_subject = "Hesabınız təsdiqləndi"
+                    receiver_email = account_obj.email
+                    email_content = "Saytımıza xoş gəldiniz, hesabınız uğurla təsdiqləndi!"
+                    send_email.delay(email_subject, receiver_email, email_content)
+                    account_obj.save()
+                    
+                    return render(request, "accounts/account_verified.html", status=200)    
+                
+                else:
+                    return render(request, "accounts/otp_expired.html", status=410)
+
+        return render(request, "accounts/account_is_already_verified.html", status=409)
 
 
 class LogoutView(View):
@@ -137,6 +142,6 @@ class LogoutView(View):
         return redirect('accounts:signin-view')
 
 
-#TODO:
-# otp is generated in models twice that couses confusion
-# so use signals to generate otp just once on instance create
+# TODO:
+#   Send emails by getting their content from html files, also make it possible to insert dynamic variables
+#   Email content html template: https://bbbootstrap.com/snippets/confirm-account-email-template-17848137

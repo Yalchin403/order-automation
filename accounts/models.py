@@ -6,7 +6,10 @@ from django.conf import settings
 import pyotp
 from dotenv import load_dotenv
 import os
-from .utils import send_email
+from .tasks import send_email
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 load_dotenv()
 
@@ -114,14 +117,14 @@ class Account(AbstractBaseUser):
 
 		return absolute_url
 
-	def save(self, *args, **kwargs) -> None:
-		if not self.is_active:
-			super().save()
 
-			self.generate_otp()
-			absolute_url = self.generate_otp_link(self.id, self.otp)
-			email_subject = "Hesab Təsdiqlənməsi"
-			rel_content = "Hesabınızı təsdiqləmək üçün aşağıdakı linkə klik edin: \n"
-			email_content = rel_content + absolute_url
-			send_email(email_subject, self.email, email_content)
-		
+@receiver(post_save, sender=Account)
+def print_only_after_deal_created(sender, instance, created, **kwargs):
+	if created:
+		print(f'New deal with pk: {instance.pk} was created.')
+		instance.generate_otp()
+		absolute_url = instance.generate_otp_link(instance.id, instance.otp)
+		email_subject = "Hesab Təsdiqlənməsi"
+		rel_content = "Hesabınızı təsdiqləmək üçün aşağıdakı linkə klik edin: \n"
+		email_content = rel_content + absolute_url
+		send_email.delay(email_subject, instance.email, email_content)

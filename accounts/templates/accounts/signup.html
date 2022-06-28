@@ -15,14 +15,25 @@
             
             <div class="container">
 
+            <!-- display messages -->
                 {% for message in messages%}
 
-                    <div class="alert alert-danger" role="alert">
+                    {% if message.tags == "success" %}
+                        <div class="alert alert-success" role="alert">
+                                <p>
+                                    {{ message }}
+                                </p>
+                        </div>
+                    
+                    {% elif message.tags == "error" %}
+                        <div class="alert alert-danger" role="alert">
                             <p>
                                 {{ message }}
                             </p>
-                    </div>
+                        </div>
                 
+                    {% endif %}
+                    
                 {% endfor %}
 
                 <div class="signup-content">

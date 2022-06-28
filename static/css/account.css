@@ -590,3 +590,9 @@ label.valid {
     margin-bottom: 10px; } }
 
 /*# sourceMappingURL=style.css.map */
+
+a {
+
+  font-family: Arial;
+  font-size: 16px;
+}
