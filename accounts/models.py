@@ -9,9 +9,12 @@ import os
 from .tasks import send_email
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from .utils import get_html_content
 
 
 load_dotenv()
+templates_directory = os.path.join(settings.BASE_DIR, "accounts", "templates", "accounts")
+PROD_DOMAIN = os.getenv("PROD_DOMAIN")
 
 if settings.DEBUG:
 	current_site = os.getenv("LOCAL_DOMAIN")
@@ -121,10 +124,11 @@ class Account(AbstractBaseUser):
 @receiver(post_save, sender=Account)
 def print_only_after_deal_created(sender, instance, created, **kwargs):
 	if created:
-		print(f'New deal with pk: {instance.pk} was created.')
 		instance.generate_otp()
-		absolute_url = instance.generate_otp_link(instance.id, instance.otp)
+		otp_absolute_url = instance.generate_otp_link(instance.id, instance.otp)
 		email_subject = "Hesab Təsdiqlənməsi"
-		rel_content = "Hesabınızı təsdiqləmək üçün aşağıdakı linkə klik edin: \n"
-		email_content = rel_content + absolute_url
+		template_path = os.path.join(templates_directory, "email_send_otp.html")
+		email_content = get_html_content(template_path, otp_absolute_url=otp_absolute_url, domain=PROD_DOMAIN)
+		# rel_content = "Hesabınızı təsdiqləmək üçün aşağıdakı linkə klik edin: \n"
+		# email_content = rel_content + absolute_url
 		send_email.delay(email_subject, instance.email, email_content)
