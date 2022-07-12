@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Employee
+from .models import (
+    Employee,
+    Product,
+    ProductImage,
+    Category,
+)
 
 
 class EmployeeManager(admin.ModelAdmin):
@@ -7,3 +12,10 @@ class EmployeeManager(admin.ModelAdmin):
 
 
 admin.site.register(Employee, EmployeeManager)
+admin.site.register(
+    [
+        Product,
+        ProductImage,
+        Category,
+    ]
+)

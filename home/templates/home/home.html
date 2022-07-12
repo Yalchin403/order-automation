@@ -31,14 +31,17 @@
         {% for product in products %}
         <div class="col-md-3">
             <div class="card card-product-grid">
-                <a href="./product-detail.html" class="img-wrap"> <img src='{{product.images.url}}'> </a>
+                {% for image_obj in product.images.all %}
+                    <a href="./product-detail.html" class="img-wrap"> <img src='{{image_obj.image.url}}'> </a>
+                {% endfor %}
                 <figcaption class="info-wrap">
-                    <a href="./product-detail.html" class="title">{{ product.product_name }}</a>
+                    <a href="./product-detail.html" class="title">{{ product.name }}</a>
                     <div class="price mt-1">${{ product.price }}</div> <!-- price-wrap.// -->
                 </figcaption>
             </div>
         </div> <!-- col.// -->
         {% endfor %}
+
     </div> <!-- row.// -->
     
     </div><!-- container // -->
