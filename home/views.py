@@ -4,13 +4,18 @@ from django.views import View
 from .models import (
 	Employee,
 	Product,
+	Category,
 )
 from .utils import send_message_to_admin
 
 class HomeView(View):
 	def get(self, request):
 		product_qs = Product.objects.filter(is_available=True)
-		context = {"products": product_qs}
+		category_qs = Category.objects.all()
+		context = {
+			"products": product_qs,
+			"categories": category_qs,
+		}
 		
 		return render(request, 'home/home.html', context)
 

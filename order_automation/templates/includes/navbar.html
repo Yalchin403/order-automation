@@ -1,14 +1,8 @@
 {% load static %}
 <header class="section-header">
-    <nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
     <div class="container">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarTop4">
-        
-       
-      </div> <!-- navbar-collapse .// -->
+     
+      
     </div> <!-- container //  -->
     </nav>
     
@@ -27,8 +21,8 @@
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">All Products</a>
-                    {% for category in links %}
-                    <a class="dropdown-item" href="#">{{ category.category_name }} </a>
+                    {% for category in categories %}
+                    <a class="dropdown-item" href="/store/{{category.name}}/">{{ category.name }} </a>
                     {% endfor %}
                 </div>
             </div>  <!-- category-wrap.// -->
@@ -47,22 +41,7 @@
                 </div>
             </form> <!-- search-wrap .end// -->
         </div> <!-- col.// -->
-        <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
-                    <div class="d-flex justify-content-end mb-3 mb-lg-0">
-                        <div class="widget-header">
-                            <small class="title text-muted">Welcome guest!</small>
-                            <div> 
-                                <a href="#">Sign in</a> <span class="dark-transp"> | </span>
-                                <a href="#"> Register</a>
-                            </div>
-                        </div>
-                        <a href="./cart.html" class="widget-header pl-3 ml-3">
-                            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-                            <span class="badge badge-pill badge-danger notify">0</span>
-                        </a>
-                    </div> <!-- widgets-wrap.// -->
-                </div> <!-- col.// -->
-    </div> <!-- row.// -->
+        
         </div> <!-- container.// -->
     </section> <!-- header-main .// -->
     

@@ -25,6 +25,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('order/', include('orders.urls')),
     path('', include('home.urls')),
+    path('store/', include('store.urls')),
     path('auth/', include('accounts.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
